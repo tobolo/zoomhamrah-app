@@ -11,27 +11,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
       - name: Extract Premium App
         run: |
-          mkdir -p /tmp/zoomhamrah
           unzip -o zoomhamrah-premium-v2.zip -d /tmp/zoomhamrah
           cp -r /tmp/zoomhamrah/lib .
           cp -r /tmp/zoomhamrah/assets .
           cp /tmp/zoomhamrah/pubspec.yaml .
-          mkdir -p android/app/src/main
-          cp /tmp/zoomhamrah/android/app/src/main/AndroidManifest.xml android/app/src/main/
 
-      - uses: subosito/flutter-action@v2
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
         with:
           channel: stable
 
-      - run: flutter pub get
+      - name: Generate Modern Android Project
+        run: |
+          rm -rf android
+          flutter create --platforms=android --org ir.zoomhamrah --project-name zoomhamrah .
 
-      - run: flutter build apk --release
+      - name: Install Dependencies
+        run: flutter pub get
 
-      - uses: actions/upload-artifact@v4
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
         with:
           name: zoomhamrah-premium-apk
           path: build/app/outputs/flutter-apk/app-release.apk
