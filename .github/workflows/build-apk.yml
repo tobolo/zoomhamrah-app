@@ -14,19 +14,12 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Extract Premium App
-        run: |
-          unzip -o zoomhamrah-premium-v2.zip -d /tmp/zoomhamrah
-          cp -r /tmp/zoomhamrah/lib .
-          cp -r /tmp/zoomhamrah/assets .
-          cp /tmp/zoomhamrah/pubspec.yaml .
-
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
 
-      - name: Generate Modern Android Project
+      - name: Generate Android Project
         run: |
           rm -rf android
           flutter create --platforms=android --org ir.zoomhamrah --project-name zoomhamrah .
